@@ -1,13 +1,22 @@
 from shapely.geometry import Point, Polygon
 
 class routes_analyzer(object):
+    """
+    Class responsible of analyzing the user route and compare it with the vehicle ones
+    and create the metrics used by the class metrics_evaluator
+    """
 
     def __init__(self, routes: list, user_route: list):
         self.vehicle_routes = routes
         self.user_route = self._remove_duplicates(user_route)
-        # self.user_route = user_route
+    
 
     def compute_metrics(self):
+        """
+        Computes the metrics for each vehicle route by comparing it with the user route
+    
+        @return: collection of dictionaries, one for each vehicle route, containing the metrics
+        """
         dictionaries = []
 
         self.check_input_corretness()
@@ -21,8 +30,12 @@ class routes_analyzer(object):
 
         return dictionaries
 
-    # Check if all the data structures are the one expected by the class
+
     def check_input_corretness(self):
+        """
+        Check if all the data structures are the one expected by the class.
+        Otherwise raise exception.
+        """
         # Check that the bus routes list is not empty
         if (len(self.vehicle_routes) == 0):
             raise Exception('Bus routes is empty')
@@ -35,10 +48,15 @@ class routes_analyzer(object):
         if (not isinstance(self.vehicle_routes[0][0][0], Point)):
             raise Exception('Bus routes does not contain Points but ' + str(type(self.vehicle_routes[0][0][0])))
 
-    # Given a list of Point representing the bus route return a list of Polygon 
     def _create_polygons(self, route: list):
-        polygons = []
+        """
+        Given a list of Point representing the bus route return a list of Polygon 
 
+        @param route: vehicle route represented as a list of Point
+        @return: vehicle route represented as a list of Polygon
+        """
+        
+        polygons = []
 
         for coordinate in range(len(route) - 1):
             p1 = Point(route[coordinate].x,
@@ -53,8 +71,12 @@ class routes_analyzer(object):
 
         return polygons
 
-    # Analyze a single route
     def _compute_route_metrics(self, route: tuple):
+        """
+        Compute metrics for a single route.
+
+        @return: dictionary containing the metrics, the type of vehicle and its route
+        """
         #Create the polygons with the route, store in the first position of the tuple (List of Point, 'VECHICLE')
         bus_route_polygons = self._create_polygons(route[0])
         user_coordinates_matched = []
@@ -93,8 +115,15 @@ class routes_analyzer(object):
 
         return result_dict
 
-    # Create the vertices of a polygon given two points of the route
+
     def _create_polygon_vertices(self, first_p: Point, second_p: Point):
+        """
+        Create the vertices of a polygon given two points of the route
+
+        @param first_p: first point
+        @param second_p: second point
+        @return: the four vertices
+        """
 
         offset_small_x = 9.999999999976694e-05
         offset_small_y = 5.000000000165983e-05
@@ -130,8 +159,14 @@ class routes_analyzer(object):
                   second_p_with_small_offset.y+dy)
 
         return new_p1, new_p2, new_p3, new_p4
-
+    
     def _remove_duplicates(self, points: list):
+        """
+        Remove duplicates from a list of Point
+    
+        @param points: the list with duplicates
+        @return: the same list without duplicates
+        """
         unique_list = []
         for point in points:
             if point not in unique_list:

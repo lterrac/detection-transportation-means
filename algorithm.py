@@ -66,6 +66,14 @@ import geopandas as gpd
 #       Input: user_id, ticket_id, km_travelled
 
 def get_bus_routes(initial_point, finishing_point):
+    """
+    Retrieve the all the bus routes slices of vehicles that passes near the initial point
+    and the finishing point
+
+    @param initial_point: initial user route Point
+    @param finishing_point: finishing user route Point
+    """
+
     # STEP 2
     # Find bus stops near I. Do the same for F
     stops_object = stops(type_of_dataset='BUS')
@@ -84,6 +92,13 @@ def get_bus_routes(initial_point, finishing_point):
     return sliced_routes
 
 def get_train_routes(initial_point, finishing_point):
+    """
+    Retrieve the all the train routes slices of vehicles that passes near the initial point
+    and the finishing point
+
+    @param initial_point: initial user route Point
+    @param finishing_point: finishing user route Point
+    """
     # STEP 2
     # Find train stops near I. Do the same for F
     stops_object = stops(type_of_dataset='TRAIN')
@@ -106,7 +121,13 @@ def get_train_routes(initial_point, finishing_point):
     return sliced_routes
 
 def detect_vehicle_and_km(raw_user_route: list, snapped_user_route: list):
-
+    """
+    Recognize the vehicle and computes the kilometers traveled by the user
+    
+    @param raw_user_route: the user raw data, used for train recognition
+    @param snapped_user_route: the user snapped data, used for bus recognition
+    @return: the type of vehicle and the kilometers traveled by the user
+    """
     route_dictionaries = []
 
     try:
@@ -182,15 +203,24 @@ def detect_vehicle_and_km(raw_user_route: list, snapped_user_route: list):
         return None, 0
 
 
-#   Find the first & last user coordinates.
-#   params:  - user_route: a list of Point()
-#   returns: - the first point of the user route
 def find_points(user_route):
+    """
+    Find the first & last user coordinates.
+
+    @param user_route: a list of Point
+    @return: the first and the last Point of the user route
+    """
+
     return user_route[0], user_route[len(user_route) - 1]
 
 
-#Given a route (list of Point) returns the kilometers of that route
 def compute_kilometers(route: list):
+    """
+    Compute the route length in kilometers
+
+    @param route: the route
+    @return: the distance traveled in kilometers
+    """
     total_km = 0
     route_length = len(route)
 
@@ -205,6 +235,19 @@ def compute_kilometers(route: list):
 
 
 def elaborate_request(user_id, ticket_id, start_time, end_time, raw_data, snapped_data):
+    """
+    Elaborate the HTTP request recognizing the vehicle on which the user has traveled on
+    and the kilometers traveled.
+
+    @param user_id: user id
+    @param ticket_id: ticket id 
+    @param start_time: trip start time
+    @param end_time: trip end time
+    @param raw_data: the data taken directly from the smartphone with no pre processing
+    @param snapped_data: the data snapped by the Google API
+    @return: dictonary with the type of vehicle, the kilometers traveled and all the other
+             informations to be stored into the database
+    """
     # STEP 0
     # Parse the GeoJSON.
     user_data = {

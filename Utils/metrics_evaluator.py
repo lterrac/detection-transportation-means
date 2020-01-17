@@ -1,9 +1,17 @@
 class metrics_evaluator(object):
+"""
+Class responsible of comparing the metrics and choose the best one
+"""
 
     def __init__(self, route_dictionaries: list):
         self.route_dictionaries = route_dictionaries
 
     def evaluate(self):
+        """
+        Evaluate the list of metrics and choose the best one
+
+        @return: the best metric dictionary
+        """
 
         self.check_input_corretness()
 
@@ -25,8 +33,11 @@ class metrics_evaluator(object):
         # Return the first elements in case there are, after the evaluation, routes with the same metrics values
         return best_routes[0]
 
-    # Check if all the data structures are the one expected by the class
     def check_input_corretness(self):
+        """
+        Check if all the data structures are the one expected by the class.
+        Otherwise raise exception
+        """
         # Check that the route dictionaries list is not empty
         if (len(self.route_dictionaries) == 0):
             raise Exception('Route dictionaries is empty')
@@ -39,8 +50,14 @@ class metrics_evaluator(object):
         if (not isinstance(self.route_dictionaries[0], dict)):
             raise Exception('Route dictionaries does not contain dictionaries but ' + str(type(self.route_dictionaries[0])))
 
-    # Evaluate the list of dictionary on a single metric
     def _evaluate_metric(self, routes: list, metric: str):
+        """
+        Evaluate the list of dictionary on a single metric
+
+        @param routes: list of metrics dictionary 
+        @param metric: the metric to evaluate among all dictionaries 
+        @return: the list of dictionary with the best metric value
+        """
         best_routes_partial = []
 
         # Find the highest metric value in the dictionary

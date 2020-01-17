@@ -6,10 +6,16 @@ from shapely.geometry import Point
 import numpy as np
 
 
-# Find the common bus lines among an Initial list of points and a Final list of points
-# The Initial list should contain at least one Point
-# The Final list should contain at least one Point
 def _find_common_bus_lines(Ilist: list, Flist: list):
+    """
+    Find the common bus lines among an Initial list of points and a Final list of points.
+    The Initial list should contain at least one Point.
+    The Final list should contain at least one Point.
+
+    @param Ilist: Initial list
+    @param Flist: Final list
+    @return: list with only the lines in common
+    """
     # Checking the input format
     # Check the lengths of the input lists are greater than 0
     if len(Ilist) <= 0:
@@ -24,6 +30,12 @@ def _find_common_bus_lines(Ilist: list, Flist: list):
 
 
 def _unique(lst: list):
+    """
+    Removes the duplicates from a list
+
+    @param lst: the list with duplicates
+    @return: the same list without duplicates
+    """
     acc_list = []
     for e in lst:
         is_already_present = True
@@ -37,11 +49,16 @@ def _unique(lst: list):
             acc_list.append((e[0], e[1], e[2]))
     return acc_list
 
-
-# Find the interception between two set of stops
-# The Initial list should contain at least one Point
-# The Final list should contain at least one Point
 def intercept(Ilist: list, Flist: list):
+    """
+    Find the interception between two set of stops.
+    The Initial list should contain at least one Point.
+    The Final list should contain at least one Point.
+
+    @param Ilist: Initial list
+    @param Flist: Final list
+    @returns: an Initial and a Final Dataframe containing all the lines code in common
+    """
     # Checking the input format
     # Check the lengths of the input lists are greater than 0
     if len(Ilist) <= 0:
@@ -66,8 +83,10 @@ def intercept(Ilist: list, Flist: list):
         return result_IDataframe, result_FDataframe
 
 
-# Class that manages the stops
 class stops(object):
+    """
+    Class that manages the stop search 
+    """
 
     def __init__(self, type_of_dataset="BUS"):
         # Finding the path of the bus stops geoson
@@ -97,9 +116,18 @@ class stops(object):
         dataset['latitude'] = lines_and_stops[:, 2]
         self.dataset = dataset
 
-    # Search the stops from between a square [x0, x1, y0, y1]
-    # It raises exception if the input are not well formatted
+    
     def _search_indexes(self, from_x=0, to_x=0, from_y=0, to_y=0):
+        """
+        Search the stops from between a square [x0, x1, y0, y1]
+        It raises exception if the input are not well formatted
+
+        @param from_x: x starting coordinates
+        @param to_x: x ending coordinates
+        @param from_y: y starting coordinates
+        @param to_y: y ending coordinates
+        @return: list of stops inside the square defined by the four parameters
+        """
         if from_x > to_x:
             raise Exception("From_x should be less than the to_x")
         elif from_y > to_y:
@@ -122,9 +150,18 @@ class stops(object):
                       from_x < float(record[1]) < to_x and from_y < float(record[2]) < to_y]
             return result
 
-    # Find the bus stops close to this point with exponential backoff policy
-    # The exponential backoff is used in order to find a minimum amount of stops
     def find_stops_close_to(self, p: Point, radius=0.0003080999999998113, minimum_amount_of_stops=5):
+        """
+        Find the bus stops close to this point with exponential backoff policy
+        The exponential backoff is used in order to find a minimum amount of stops
+
+        @param p: the Point at the center of the circle used to search the stops
+        @param radius: the circle radius
+        @param minimum_amount_of_stops: minimum number of stops to find
+
+        @return: list of nearest stops inside the circle
+        """
+        
         # Initialize the result to an empty list
         result = []
         i = 0
