@@ -13,6 +13,9 @@ from geopy import distance
 # List of NP.ARRAYs with data
 
 class LinestringSelector(object):
+    """
+    Class responsible of create the route slices according to the user route
+    """
 
     def __init__(self, Istops, Fstops, type_of_dataset="BUS"):
 

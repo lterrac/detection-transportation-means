@@ -1,7 +1,7 @@
 class metrics_evaluator(object):
-"""
-Class responsible of comparing the metrics and choose the best one
-"""
+    """
+    Class responsible of comparing the metrics and choose the best one
+    """
 
     def __init__(self, route_dictionaries: list):
         self.route_dictionaries = route_dictionaries

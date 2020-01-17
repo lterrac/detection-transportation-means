@@ -4,6 +4,8 @@ import json
 def send_data(data):
     """
     Send the data back to Java backend
+
+    @param data: data to send
     """
 
     API_URL = "https://polimi-demo.partners.mia-platform.eu/geolocalization/trip"
